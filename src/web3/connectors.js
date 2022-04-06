@@ -9,6 +9,8 @@ import {UnsupportedChainIdError, useWeb3React} from '@web3-react/core'
 import {WalletConnectConnector} from '@web3-react/walletconnect-connector'
 import {useCallback, useMemo} from 'react'
 import store from '../redux/store'
+import {useDispatch} from "react-redux";
+import {SHOW_CONNECT_WALLET} from "../redux";
 
 export const SCAN_ADDRESS = {
   [ChainId.ETH]: 'https://etherscan.io',
@@ -100,11 +102,14 @@ const getWalletConnectorParams = (chainId) => {
 
 export const useConnectWallet = () => {
   const {activate, deactivate, active} = useWeb3React()
+  const dispatch = useDispatch()
   const connectWallet = useCallback((connector, chainId) => changeNetwork(chainId).then(() => activate(connector, undefined, true)
     .then(e => {
-      store.getState().index.showSwitchWallet && store.dispatch(changeShowSwitchWallet({showSwitchWallet: false}))
-      store.getState().index.showConnectWallet && store.dispatch(changeShowConnectWall({showConnectWallet: false}))
       if (window.ethereum && window.ethereum.on) {
+        dispatch({
+          type: SHOW_CONNECT_WALLET,
+          data: true
+        })
         window.ethereum.on('accountsChanged', accounts => {
           if (accounts.length === 0) {
             deactivate()
@@ -126,7 +131,10 @@ export const useConnectWallet = () => {
     .catch(error => {
       switch (true) {
         case error instanceof UnsupportedChainIdError:
-          store.dispatch(changeShowSwitchWallet({showSwitchWallet: true}))
+          dispatch({
+            type: SHOW_CONNECT_WALLET,
+            data: true
+          })
           break
         case error instanceof NoEthereumProviderError:
           break

@@ -1,13 +1,13 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux'
 import thunkMiddleware from 'redux-thunk'
 
-import index from './reducers'
-import reduxWeb3 from './reducers/web3'
+import index from './index'
+import mining from './mining'
 
 const store = createStore(
   combineReducers({
     index,
-    reduxWeb3
+    mining
   }),
   applyMiddleware(thunkMiddleware)
 )

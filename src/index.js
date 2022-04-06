@@ -6,16 +6,16 @@ import {Web3ReactProvider} from '@web3-react/core'
 import 'moment/locale/zh-cn'
 import Intl from './locales/intl'
 import {getLibrary} from './web3/getLibrary'
-import Context from './context'
+import ThemeProvider from "./theme";
 
 ReactDom.render(
   <Provider store={store}>
     <Web3ReactProvider getLibrary={getLibrary}>
-      <Context>
         <Intl>
-          <App/>
+          <ThemeProvider>
+            <App/>
+          </ThemeProvider>
         </Intl>
-      </Context>
     </Web3ReactProvider>
   </Provider>,
   document.getElementById('root')

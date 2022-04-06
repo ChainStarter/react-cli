@@ -1,15 +1,15 @@
-import { UPDATE_COUNT } from '../actions/web3'
+export const MINING_DATA = 'MINING_DATA'
 
 const initState = {
-  updateCount: 0,
+  miningData: null
 }
 
 export default function reducer(state = initState, action) {
   switch (action.type) {
-    case UPDATE_COUNT:
+    case MINING_DATA:
       return {
         ...state,
-        updateCount: state.updateCount + 1,
+        updateCount: action.data,
       }
     default:
       return state

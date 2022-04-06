@@ -3,6 +3,9 @@ import {useWeb3React} from "@web3-react/core";
 import {getContract} from "../web3";
 import {formatAmount} from "../utils/format";
 import ERC20_ABI from '../web3/abi/ERC20.json'
+import {useDispatch, useSelector} from "react-redux";
+import {DARK_MODE} from "../redux/index";
+
 export const useBalance = (
   blockHeight,
   address,
@@ -11,7 +14,7 @@ export const useBalance = (
   owner = null,
 ) => {
   const [balance, setBalance] = useState('0')
-  const { account, library, active } = useWeb3React()
+  const {account, library, active} = useWeb3React()
   useMemo(() => {
     if (active && address && blockHeight !== 0) {
       owner = !owner ? account : owner
@@ -22,19 +25,38 @@ export const useBalance = (
         .then(balance_ => {
           const resBalance = formatAmount(balance_, decimals)
           setBalance(resBalance)
-        }).catch(e=>{})
+        }).catch(e => {
+      })
     }
   }, [account, active, blockHeight, address])
   return balance
 }
 
 export const useNow = () => {
-  const [now, setNow] = useState(() => ~~(new Date().getTime()/1000))
+  const [now, setNow] = useState(() => ~~(new Date().getTime() / 1000))
   useMemo(() => {
-    const timeout = setTimeout(()=>{
-      setNow(~~(new Date().getTime()/1000))
+    const timeout = setTimeout(() => {
+      setNow(~~(new Date().getTime() / 1000))
     }, 1000)
     return () => clearTimeout(timeout)
   }, [now]);
   return now
+}
+
+export const useIsDarkMode = () => {
+  const darkMode = useSelector(state => state.index.darkMode)
+  const dispatch = useDispatch()
+  const changeDarkMode = (isDarkMode) => {
+    localStorage.setItem('isDarkMode', isDarkMode ? '1' : '0')
+    dispatch(
+      {
+        type: DARK_MODE,
+        data: isDarkMode
+      }
+    )
+  }
+  return {
+    changeDarkMode,
+    darkMode
+  }
 }
