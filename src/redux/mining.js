@@ -9,7 +9,7 @@ export default function reducer(state = initState, action) {
     case MINING_DATA:
       return {
         ...state,
-        updateCount: action.data,
+        miningData: action.data,
       }
     default:
       return state
